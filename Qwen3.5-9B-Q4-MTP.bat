@@ -1,0 +1,48 @@
+@echo off
+setlocal
+
+set PORT_ARG=%1
+if "%PORT_ARG%"=="" set PORT_ARG=8080
+
+set SCRIPT_DIR=%~dp0
+:: 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
+cd /d "%SCRIPT_DIR%"
+
+set ROOT=%SCRIPT_DIR%..
+
+set LLAMA_PATH="..\bin\llama-b9859-bin-win-cuda-13.3-x64"
+
+set MODEL_FOLDER="..\models\Qwen\Qwen3.5-9B-MTP"
+
+set MODEL_NAME=Qwen3.5-9B-UD-Q4_K_XL.gguf
+
+set CONTEXT_WINDOW=32000
+
+:: 2. Ahora las rutas relativas funcionarán perfectamente siempre
+%LLAMA_PATH%\llama-server.exe ^
+-m %MODEL_FOLDER%\%MODEL_NAME% ^
+-mm %MODEL_FOLDER%\mmproj-BF16.gguf ^
+-ngl 999 ^
+--fit off ^
+-c %CONTEXT_WINDOW% ^
+--reasoning on ^
+--cache-type-k q8_0 ^
+--cache-type-v q8_0 ^
+--cache-type-k-draft q8_0 ^
+--cache-type-v-draft q8_0 ^
+--spec-type draft-mtp ^
+--spec-draft-n-max 2 ^
+--temp 0.6 ^
+--top-p 0.95 ^
+--top-k 20 ^
+--min-p 0.0 ^
+--presence-penalty 0.0 ^
+--repeat-penalty 1.0 ^
+-np 1 ^
+-lv 4 ^
+--image-min-tokens 1024 ^
+--cache-idle-slots ^
+--kv-unified ^
+--host 127.0.0.1 ^
+--port %PORT_ARG% ^
+-a Qwen3.5-9B
