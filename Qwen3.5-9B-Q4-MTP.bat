@@ -10,17 +10,21 @@ cd /d "%SCRIPT_DIR%"
 
 set ROOT=%SCRIPT_DIR%..
 
+set HOST_ARG=127.0.0.1
+
 set LLAMA_PATH="..\bin\llama-b9803-bin-win-cuda-13.3-x64"
 
 set MODEL_FOLDER="..\models\Qwen\Qwen3.5-9B-MTP"
 
-set MODEL_NAME=Qwen3.5-9B-UD-Q4_K_XL.gguf
+set MODEL_PATH=%MODEL_FOLDER%\Qwen3.5-9B-UD-Q4_K_XL.gguf
+
+set MODEL_ALIAS=Qwen3.5-9B
 
 set CONTEXT_WINDOW=131072
 
 :: 2. Ahora las rutas relativas funcionarán perfectamente siempre
 %LLAMA_PATH%\llama-server.exe ^
--m %MODEL_FOLDER%\%MODEL_NAME% ^
+-m %MODEL_PATH% ^
 -mm %MODEL_FOLDER%\mmproj-BF16.gguf ^
 -ngl 999 ^
 --fit off ^
@@ -43,6 +47,6 @@ set CONTEXT_WINDOW=131072
 --image-min-tokens 1024 ^
 --cache-idle-slots ^
 --kv-unified ^
---host 127.0.0.1 ^
+--host %HOST_ARG% ^
 --port %PORT_ARG% ^
--a Qwen3.5-9B
+-a %MODEL_ALIAS%
