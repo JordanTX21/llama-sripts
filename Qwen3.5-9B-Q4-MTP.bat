@@ -10,13 +10,13 @@ cd /d "%SCRIPT_DIR%"
 
 set ROOT=%SCRIPT_DIR%..
 
-set LLAMA_PATH="..\bin\llama-b9859-bin-win-cuda-13.3-x64"
+set LLAMA_PATH="..\bin\llama-b9803-bin-win-cuda-13.3-x64"
 
 set MODEL_FOLDER="..\models\Qwen\Qwen3.5-9B-MTP"
 
 set MODEL_NAME=Qwen3.5-9B-UD-Q4_K_XL.gguf
 
-set CONTEXT_WINDOW=32000
+set CONTEXT_WINDOW=131072
 
 :: 2. Ahora las rutas relativas funcionarán perfectamente siempre
 %LLAMA_PATH%\llama-server.exe ^

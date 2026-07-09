@@ -1,0 +1,75 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "llama.cpp/Qwen3.6-35B-A3B",
+  "plugin": [
+    "opencode-antigravity-auth@latest",
+    "opencode-websearch-cited@1.2.0"
+  ],
+  "server": {
+    "port": 4096,
+    "hostname": "0.0.0.0",
+    "mdns": true,
+    "mdnsDomain": "myproject.local",
+    "cors": [
+      "http://localhost:5173"
+    ]
+  },
+  "permission": {
+    "edit": "allow"
+  },
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@0.0.38"
+      ],
+      "enabled": true
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "environment": {
+        "DEFAULT_MINIMUM_TOKENS": ""
+      },
+      "enabled": true
+    }
+  },
+  "provider": {
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Llama.cpp (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1"
+      },
+      "models": {
+        "Qwen3.5-9B": {
+          "name": "Qwen3.5-9B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
+        },
+        "Qwen3.6-35B-A3B": {
+          "name": "Qwen3.6-35B-A3B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
+        },
+        "Qwen3.5-4B": {
+          "name": "Qwen3.5-4B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
+        }
+      }
+    }
+  }
+}

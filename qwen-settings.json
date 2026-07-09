@@ -1,0 +1,49 @@
+{
+  "modelProviders": {
+    "openai": [
+      {
+        "id": "llama.cpp",
+        "name": "llama.cpp",
+        "envKey": "LLAMA_CPP_API_KEY",
+        "baseUrl": "http://127.0.0.1:8080/v1",
+        "generationConfig": {
+          "contextWindowSize": 131072
+        }
+      }
+    ]
+  },
+  "security": {
+    "auth": {
+      "selectedType": "openai"
+    }
+  },
+  "model": {
+    "name": "llama.cpp"
+  },
+  "env": {
+    "LLAMA_CPP_API_KEY": "llama.cpp"
+  },
+  "$version": 4,
+  "tools": {
+    "approvalMode": "yolo"
+  },
+  "general": {
+    "language": "en",
+    "outputLanguage": "Español"
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp"
+    }
+  },
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  }
+}
