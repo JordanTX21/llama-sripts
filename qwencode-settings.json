@@ -1,12 +1,24 @@
 {
+  "ide": {
+    "hasSeenNudge": true
+  },
+  "env": {
+    "LLAMA_CPP_API_KEY": "llama.cpp"
+  },
   "modelProviders": {
     "openai": [
       {
         "id": "llama.cpp",
         "name": "llama.cpp",
-        "envKey": "LLAMA_CPP_API_KEY",
         "baseUrl": "http://127.0.0.1:8080/v1",
+        "envKey": "LLAMA_CPP_API_KEY",
         "generationConfig": {
+          "extra_body": {
+            "enable_thinking": true
+          },
+          "modalities": {
+            "image": true
+          },
           "contextWindowSize": 131072
         }
       }
@@ -18,10 +30,8 @@
     }
   },
   "model": {
-    "name": "llama.cpp"
-  },
-  "env": {
-    "LLAMA_CPP_API_KEY": "llama.cpp"
+    "name": "llama.cpp",
+    "baseUrl": "http://127.0.0.1:8080/v1"
   },
   "$version": 4,
   "tools": {
@@ -41,9 +51,5 @@
     "context7": {
       "httpUrl": "https://mcp.context7.com/mcp"
     }
-  },
-  "ide": {
-    "hasSeenNudge": true,
-    "enabled": true
   }
 }
