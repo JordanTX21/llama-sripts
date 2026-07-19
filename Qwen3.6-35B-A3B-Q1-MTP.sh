@@ -53,12 +53,10 @@ fi
 ROOT="$SCRIPT_DIR/.."
 
 MODEL_FOLDER="$MODELS_FOLDER/Qwen/Qwen3.6-35B-A3B-MTP"
-MODEL_PATH="$MODEL_FOLDER/Qwen3.6-35B-A3B-MXFP4_MOE.gguf"
+MODEL_PATH="$MODEL_FOLDER/Qwen3.6-35B-A3B-UD-IQ1_M.gguf"
 MODEL_ALIAS="Qwen3.6-35B-A3B"
 
-if [ -z "$CONTEXT_WINDOW" ]; then
-    CONTEXT_WINDOW=131072
-fi
+CONTEXT_WINDOW=32768
 
 # 2. Ejecutar llama-server (sin el .exe y usando barras normales)
 "$LLAMA_PATH/llama-server" \
@@ -66,12 +64,13 @@ fi
   -ngl 999 \
   --fit off \
   -c "$CONTEXT_WINDOW" \
-  -ncmoe 30 \
+  -ncmoe 10 \
+  --jinja \
   --reasoning on \
-  --cache-type-k q8_0 \
-  --cache-type-v q8_0 \
-  --cache-type-k-draft q8_0 \
-  --cache-type-v-draft q8_0 \
+  --cache-type-k q4_0 \
+  --cache-type-v q4_0 \
+  --cache-type-k-draft q4_0 \
+  --cache-type-v-draft q4_0 \
   --spec-type draft-mtp \
   --spec-draft-n-max 2 \
   --temp 0.6 \
@@ -82,8 +81,6 @@ fi
   --repeat-penalty 1.0 \
   -np 1 \
   -lv 4 \
-  --cache-idle-slots \
-  --kv-unified \
   --no-mmap \
   --host "$HOST_ARG" \
   --port "$PORT_ARG" \
