@@ -52,13 +52,14 @@ fi
 # 2. Ejecutar llama-server (usamos \ para romper líneas en Bash)
 "$LLAMA_PATH/llama-server" \
   -m "$MODEL_PATH" \
+  -mm "$MODEL_FOLDER/mmproj-BF16.gguf" \
   --model-draft "$MODEL_FOLDER/mtp-gemma-4-12B-it-Q4_0.gguf" \
   -ngl 999 \
   --fit off \
   -c "$CONTEXT_WINDOW" \
   --reasoning on \
   --spec-type draft-mtp \
-  --spec-draft-n-max 2 \
+  --spec-draft-n-max 4 \
   --temp 1.0 \
   --top-p 0.95 \
   --top-k 64 \
