@@ -68,6 +68,13 @@
             "context": 131072,
             "output": 65536
           }
+        },
+        "Gemma-4-12B": {
+          "name": "Gemma-4-12B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
         }
       }
     }
