@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 # 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
 # Cargar archivo .env si existe (ignora comentarios que empiecen con #)
@@ -41,9 +41,9 @@ if [ -z "$MODELS_FOLDER" ]; then
 fi
 
 ROOT="$SCRIPT_DIR/.."
-MODEL_FOLDER="$MODELS_FOLDER/Gemma/Gemma4-12B"
-MODEL_PATH="$MODEL_FOLDER/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf"
-MODEL_ALIAS="Gemma-4-12B"
+MODEL_FOLDER="$MODELS_FOLDER/Liquid/LFM2.5-1.2B"
+MODEL_PATH="$MODEL_FOLDER/LFM2.5-1.2B-Thinking-UD-Q8_K_XL.gguf"
+MODEL_ALIAS="LFM2.5-1.2B"
 
 if [ -z "$CONTEXT_WINDOW" ]; then
     CONTEXT_WINDOW=131072
@@ -52,23 +52,18 @@ fi
 # 2. Ejecutar llama-server (usamos \ para romper líneas en Bash)
 "$LLAMA_PATH/llama-server" \
   -m "$MODEL_PATH" \
-  -mm "$MODEL_FOLDER/mmproj-BF16.gguf" \
-  --model-draft "$MODEL_FOLDER/mtp-gemma-4-12B-it-Q4_0.gguf" \
   -ngl 999 \
   --fit off \
   -c "$CONTEXT_WINDOW" \
   --reasoning on \
   --cache-type-k q8_0 \
   --cache-type-v q8_0 \
-  --cache-type-k-draft q8_0 \
-  --cache-type-v-draft q8_0 \
-  --spec-type draft-mtp \
-  --spec-draft-n-max 4 \
-  --temp 1.0 \
+  --temp 0.06 \
   --top-p 0.95 \
-  --top-k 64 \
-  -np 4 \
-  -lv 4 \
+  --top-k 50 \
+  --min-p 0.0 \
+  --presence-penalty 0.0 \
+  --repeat-penalty 1.05 \
   --cache-idle-slots \
   --kv-unified \
   --host "$HOST_ARG" \

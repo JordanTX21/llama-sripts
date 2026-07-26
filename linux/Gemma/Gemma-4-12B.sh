@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 # 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
 # Cargar archivo .env si existe (ignora comentarios que empiecen con #)
@@ -31,9 +31,9 @@ if [ -f "$SCRIPT_DIR/.env" ]; then
     export $(grep -v '^#' "$SCRIPT_DIR/.env" | xargs)
 fi
 
-# Asignar rutas por defecto de llama prism fork
-if [ -z "$LLAMA_PRISM_PATH" ]; then
-    LLAMA_PRISM_PATH="../bin/llama-b9803-bin-linux" # Ajusta el nombre de la carpeta según tu versión de Linux
+# Asignar rutas por defecto si las variables de entorno están vacías
+if [ -z "$LLAMA_PATH" ]; then
+    LLAMA_PATH="../bin/llama-b9803-bin-linux" # Ajusta el nombre de la carpeta según tu versión de Linux
 fi
 
 if [ -z "$MODELS_FOLDER" ]; then
@@ -41,33 +41,36 @@ if [ -z "$MODELS_FOLDER" ]; then
 fi
 
 ROOT="$SCRIPT_DIR/.."
-MODEL_FOLDER="$MODELS_FOLDER/Prism/Ternary-Bonsai"
-MODEL_PATH="$MODEL_FOLDER/Ternary-Bonsai-27B-Q2_0.gguf"
-MODEL_ALIAS="Bonsai-27B"
+MODEL_FOLDER="$MODELS_FOLDER/Gemma/Gemma4-12B"
+MODEL_PATH="$MODEL_FOLDER/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf"
+MODEL_ALIAS="Gemma-4-12B"
 
 if [ -z "$CONTEXT_WINDOW" ]; then
     CONTEXT_WINDOW=131072
 fi
 
 # 2. Ejecutar llama-server (usamos \ para romper líneas en Bash)
-"$LLAMA_PRISM_PATH/llama-server" \
+"$LLAMA_PATH/llama-server" \
   -m "$MODEL_PATH" \
+  -mm "$MODEL_FOLDER/mmproj-BF16.gguf" \
+  --model-draft "$MODEL_FOLDER/mtp-gemma-4-12B-it-Q4_0.gguf" \
   -ngl 999 \
+  --fit off \
   -c "$CONTEXT_WINDOW" \
-  --cache-type-k q4_0 \
-  --cache-type-v q4_0 \
-  --parallel 1 \
-  --jinja \
-  --temp 0.7 \
-  --top-p 0.95 \
-  --top-k 20 \
-  --min-p 0 \
-  --device CUDA0 \
-  --spec-type ngram-mod \
-  --spec-ngram-mod-n-min 48 \
-  --spec-ngram-mod-n-max 64 \
-  --spec-ngram-mod-n-match 24 \
   --reasoning on \
+  --cache-type-k q8_0 \
+  --cache-type-v q8_0 \
+  --cache-type-k-draft q8_0 \
+  --cache-type-v-draft q8_0 \
+  --spec-type draft-mtp \
+  --spec-draft-n-max 4 \
+  --temp 1.0 \
+  --top-p 0.95 \
+  --top-k 64 \
+  -np 4 \
+  -lv 4 \
+  --cache-idle-slots \
+  --kv-unified \
   --host "$HOST_ARG" \
   --port "$PORT_ARG" \
   -a "$MODEL_ALIAS"

@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Valores por defecto
 PORT_ARG="8080"
 HOST_ARG="127.0.0.1"
 
-# Parsear argumentos (Soporta --PORT=valor y --HOST=valor)
+# Parsear argumentos (--PORT=8080 --HOST=127.0.0.1)
 for arg in "$@"; do
     case $arg in
         --PORT=*)
@@ -16,34 +16,24 @@ for arg in "$@"; do
             shift
             ;;
         *)
-            # Otros argumentos no reconocidos
+            # Otros argumentos si los hubiera
+            shift
             ;;
     esac
 done
 
 # 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
-# Cargar variables de entorno desde el archivo .env si existe
+# Cargar archivo .env si existe (ignora comentarios que empiecen con #)
 if [ -f "$SCRIPT_DIR/.env" ]; then
-    # Lee el archivo ignorando comentarios (#) y exporta las variables
-    while IFS='=' read -r key value || [ -n "$key" ]; do
-        # Ignorar líneas vacías y comentarios
-        [[ "$key" =~ ^[[:space:]]*# ]] && continue
-        [[ -z "$key" ]] && continue
-        
-        # Limpiar comillas si existen en el valor
-        value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
-        export "$key"="$value"
-     Dilizado desde el archivo .env
-    done < "$SCRIPT_DIR/.env"
+    export $(grep -v '^#' "$SCRIPT_DIR/.env" | xargs)
 fi
 
-# Asignar rutas por defecto si no están en el entorno
-# NOTA: Ajusté la ruta bin para Linux (quitando el entorno de windows/cuda-win)
+# Asignar rutas por defecto si las variables de entorno están vacías
 if [ -z "$LLAMA_PATH" ]; then
-    LLAMA_PATH="../bin" 
+    LLAMA_PATH="../bin/llama-b9803-bin-linux" # Ajusta el nombre de la carpeta según tu versión de Linux
 fi
 
 if [ -z "$MODELS_FOLDER" ]; then
@@ -51,22 +41,21 @@ if [ -z "$MODELS_FOLDER" ]; then
 fi
 
 ROOT="$SCRIPT_DIR/.."
-
-MODEL_FOLDER="$MODELS_FOLDER/Qwen/Qwen3.6-35B-A3B-MTP"
-MODEL_PATH="$MODEL_FOLDER/Qwen3.6-35B-A3B-MXFP4_MOE.gguf"
-MODEL_ALIAS="Qwen3.6-35B-A3B"
+MODEL_FOLDER="$MODELS_FOLDER/Qwen/Qwen3.5-9B-MTP"
+MODEL_PATH="$MODEL_FOLDER/Qwen3.5-9B-UD-Q4_K_XL.gguf"
+MODEL_ALIAS="Qwen3.5-9B"
 
 if [ -z "$CONTEXT_WINDOW" ]; then
     CONTEXT_WINDOW=131072
 fi
 
-# 2. Ejecutar llama-server (sin el .exe y usando barras normales)
+# 2. Ejecutar llama-server (usamos \ para romper líneas en Bash)
 "$LLAMA_PATH/llama-server" \
   -m "$MODEL_PATH" \
+  -mm "$MODEL_FOLDER/mmproj-BF16.gguf" \
   -ngl 999 \
   --fit off \
   -c "$CONTEXT_WINDOW" \
-  -ncmoe 30 \
   --reasoning on \
   --cache-type-k q8_0 \
   --cache-type-v q8_0 \
@@ -82,9 +71,9 @@ fi
   --repeat-penalty 1.0 \
   -np 1 \
   -lv 4 \
+  --image-min-tokens 1024 \
   --cache-idle-slots \
   --kv-unified \
-  --no-mmap \
   --host "$HOST_ARG" \
   --port "$PORT_ARG" \
   -a "$MODEL_ALIAS"

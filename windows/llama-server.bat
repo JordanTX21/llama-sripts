@@ -14,7 +14,7 @@ shift
 goto parse_args
 :end_parse_args
 
-set SCRIPT_DIR=%~dp0
+set SCRIPT_DIR=%~dp0..\
 :: 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
 cd /d "%SCRIPT_DIR%"
 
@@ -34,6 +34,7 @@ set ROOT=%SCRIPT_DIR%..
 
 %LLAMA_PATH%\llama-server.exe ^
     --models-dir "%MODELS_FOLDER%" ^
+    --models-max 1 ^
     --models-preset "%SCRIPT_DIR%presets.ini" ^
     --host %HOST_ARG% ^
     --port %PORT_ARG%

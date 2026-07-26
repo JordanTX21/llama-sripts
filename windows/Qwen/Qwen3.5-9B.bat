@@ -14,7 +14,7 @@ shift
 goto parse_args
 :end_parse_args
 
-set SCRIPT_DIR=%~dp0
+set SCRIPT_DIR=%~dp0..\..\
 :: 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
 cd /d "%SCRIPT_DIR%"
 
@@ -29,43 +29,36 @@ if "%MODELS_FOLDER%"=="" set MODELS_FOLDER="..\models"
 
 set ROOT=%SCRIPT_DIR%..
 
-set MODEL_FOLDER="%MODELS_FOLDER%\Qwen\Qwen3.6-35B-A3B"
-set MODEL_PATH=%MODEL_FOLDER%\Qwen3.6-35B-A3B-UD-IQ2_XXS.gguf
-set MODEL_ALIAS=Qwen3.6-35B-A3B
+set MODEL_FOLDER="%MODELS_FOLDER%\Qwen\Qwen3.5-9B-MTP"
+set MODEL_PATH=%MODEL_FOLDER%\Qwen3.5-9B-UD-Q4_K_XL.gguf
+set MODEL_ALIAS=Qwen3.5-9B
 if "%CONTEXT_WINDOW%"=="" set CONTEXT_WINDOW=131072
 
 :: 2. Ahora las rutas relativas funcionarán perfectamente siempre
 %LLAMA_PATH%\llama-server.exe ^
 -m %MODEL_PATH% ^
 -mm %MODEL_FOLDER%\mmproj-BF16.gguf ^
--c %CONTEXT_WINDOW% ^
 -ngl 999 ^
--fa on ^
--t 6 ^
--tb 8 ^
--np 1 ^
--b 512 ^
--ub 512 ^
--Cr 0-11 ^
--Crb 0-11 ^
---cpu-strict 1 ^
---cpu-strict-batch 1 ^
---jinja ^
+--fit off ^
+-c %CONTEXT_WINDOW% ^
 --reasoning on ^
---image-min-tokens 1024 ^
---cache-type-k q4_0 ^
---cache-type-v q4_0 ^
---prio 3 ^
---prio-batch 3 ^
---poll 100 ^
---poll-batch 1 ^
+--cache-type-k q8_0 ^
+--cache-type-v q8_0 ^
+--cache-type-k-draft q8_0 ^
+--cache-type-v-draft q8_0 ^
+--spec-type draft-mtp ^
+--spec-draft-n-max 2 ^
 --temp 0.6 ^
 --top-p 0.95 ^
 --top-k 20 ^
 --min-p 0.0 ^
 --presence-penalty 0.0 ^
 --repeat-penalty 1.0 ^
---no-mmap ^
+-np 1 ^
+-lv 4 ^
+--image-min-tokens 1024 ^
+--cache-idle-slots ^
+--kv-unified ^
 --host %HOST_ARG% ^
 --port %PORT_ARG% ^
 -a %MODEL_ALIAS%

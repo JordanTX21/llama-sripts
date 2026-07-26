@@ -14,7 +14,7 @@ shift
 goto parse_args
 :end_parse_args
 
-set SCRIPT_DIR=%~dp0
+set SCRIPT_DIR=%~dp0..\..\
 :: 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
 cd /d "%SCRIPT_DIR%"
 
@@ -29,10 +29,10 @@ if "%MODELS_FOLDER%"=="" set MODELS_FOLDER="..\models"
 
 set ROOT=%SCRIPT_DIR%..
 
-set MODEL_FOLDER="%MODELS_FOLDER%\Qwen\Qwen3.5-9B-MTP"
-set MODEL_PATH=%MODEL_FOLDER%\Qwen3.5-9B-UD-Q4_K_XL.gguf
-set MODEL_ALIAS=Qwen3.5-9B
-if "%CONTEXT_WINDOW%"=="" set CONTEXT_WINDOW=131072
+set MODEL_FOLDER="%MODELS_FOLDER%\Qwen\Qwen3.5-4B-MTP"
+set MODEL_PATH=%MODEL_FOLDER%\Qwen3.5-4B-UD-Q4_K_XL.gguf
+set MODEL_ALIAS=Qwen3.5-4B
+if "%CONTEXT_WINDOW%"=="" set CONTEXT_WINDOW=32000
 
 :: 2. Ahora las rutas relativas funcionarán perfectamente siempre
 %LLAMA_PATH%\llama-server.exe ^
