@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 # 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
 # Cargar archivo .env si existe (ignora comentarios que empiecen con #)

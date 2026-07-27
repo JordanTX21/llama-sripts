@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 # 1. FORZAR EL DIRECTORIO DE TRABAJO A LA CARPETA DEL SCRIPT
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
 # Cargar archivo .env si existe (ignora comentarios que empiecen con #)
@@ -41,7 +41,7 @@ if [ -z "$MODELS_FOLDER" ]; then
 fi
 
 ROOT="$SCRIPT_DIR/.."
-MODEL_FOLDER="$MODELS_FOLDER/Qwen/Qwen3.5-9B-MTP"
+MODEL_FOLDER="$MODELS_FOLDER/Qwen/Qwen3.5-9B"
 MODEL_PATH="$MODEL_FOLDER/Qwen3.5-9B-UD-Q4_K_XL.gguf"
 MODEL_ALIAS="Qwen3.5-9B"
 
