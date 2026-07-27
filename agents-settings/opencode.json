@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "llama.cpp/Qwen3.6-35B-A3B",
+  "model": "llama.cpp/Gemma-4-12B",
   "plugin": [
     "opencode-antigravity-auth@latest",
     "opencode-websearch-cited@1.2.0"
@@ -13,9 +13,6 @@
     "cors": [
       "http://localhost:5173"
     ]
-  },
-  "permission": {
-    "edit": "allow"
   },
   "mcp": {
     "playwright": {
@@ -71,6 +68,13 @@
         },
         "Gemma-4-12B": {
           "name": "Gemma-4-12B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
+        },
+        "Bonzai-27B": {
+          "name": "Bonzai-27B (local)",
           "limit": {
             "context": 131072,
             "output": 65536
